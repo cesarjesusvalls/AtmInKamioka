@@ -246,44 +246,6 @@ class optManager:
             outname = self.outpath+self.det+'_'+self.tag+'_'+case+'_1D.csv'
             df.to_csv(outname, index=False)
 
-
-        # elif case == '3D_kappa_w_constraints':
-
-        #     min_IC = np.min(self.list_of_kappa_IC)
-        #     max_IC = np.max(self.list_of_kappa_IC)
-
-        #     min_OC = np.min(self.list_of_kappa_OC)
-        #     max_OC = np.max(self.list_of_kappa_OC)
-
-        #     min_MT = np.min(self.list_of_kappa_MT)
-        #     max_MT = np.max(self.list_of_kappa_MT)
-
-        #     N_tests_per_kappa = 15
-
-        #     for i in range(N_tests_per_kappa):
-
-
-        # elif case == '3D_kappa_wo_constraints':
-
-        #     min_IC = np.min(self.list_of_kappa_IC)
-        #     max_IC = np.max(self.list_of_kappa_IC)
-
-        #     min_OC = np.min(self.list_of_kappa_OC)
-        #     max_OC = np.max(self.list_of_kappa_OC)
-
-        #     min_MT = np.min(self.list_of_kappa_MT)
-        #     max_MT = np.max(self.list_of_kappa_MT)
-
-        #     N_tests_per_kappa = 15
-
-        #     IC_ks = np.random.uniform(min_IC, max_IC, N_tests_per_kappa)
-        #     OC_ks = np.random.uniform(min_OC, max_OC, N_tests_per_kappa)
-        #     MT_ks = np.random.uniform(min_MT, max_MT, N_tests_per_kappa)
-
-        #     for i in range(N_tests_per_kappa):
-
-
-
         self.reset_to_nominal_params()
         return outname
 

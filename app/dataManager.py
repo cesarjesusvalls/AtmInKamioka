@@ -223,14 +223,6 @@ class AnaBin:
         self.E_bin, self.cosZ_bin = self.get_flux_bin(self.energy_avg, self.cos_z_avg, E_bins, cosZ_bins)
         self.flux = self.flux_from_flux_index(flux_manager.flux_data, self.energy_avg, self.E_bin, self.cosZ_bin)
 
-        # # Now the flux by quantile
-        # N_quantiles = len(self.quantile_X)
-        # self.flux_quantile_matrix = np.array([[{} for _ in range(N_quantiles)] for _ in range(N_quantiles)])
-
-        # for i in range(N_quantiles):
-        #     for j in range(N_quantiles):
-        #         self.flux_quantile_matrix[i, j] = self.flux
-
     def get_quantile_based_flux(self, OscProb, nu, alpha, beta):
 
         nu_flav = {'e': 1, 'mu': 2, 'tau': 3}
@@ -328,31 +320,6 @@ class AnaBin:
 
         self.sampled_Zs = self.pchip_Z_interpolator(uniform_Z_data)
         self.sampled_Es = self.pchip_E_interpolator(uniform_E_data)
-
-    # def resample(self):
-
-    #     quantiles = np.array([0, 2.3, 15.9, 50, 84.1, 97.7, 100])
-
-    #     Z_values = [self.Z_Q_central_values[0]]
-    #     for x in self.input_file_Z_quantiles:
-    #         Z_values.append(x)
-    #     Z_values.append(self.Z_Q_central_values[-1])
-
-    #     E_values = [self.E_Q_central_values[0]]
-    #     for x in self.input_file_E_quantiles:
-    #         E_values.append(x)
-    #     E_values.append(self.E_Q_central_values[-1])
-
-    #     nToys = 10000
-    #     uniform_Z_data = np.random.uniform(0, 100, nToys)
-    #     uniform_E_data = np.random.uniform(0, 100, nToys)
-    
-    
-    #     Z_spline = PchipInterpolator(quantiles, Z_values)
-    #     E_spline = PchipInterpolator(quantiles, E_values)
-
-    #     self.sampled_Zs = Z_spline(uniform_Z_data)
-    #     self.sampled_Es = E_spline(uniform_E_data)
 
 class AnaReaction:
     """
@@ -544,7 +511,6 @@ class AnaSample:
             ndc_x = left_margin + (x_position - x_min) / (x_max - x_min) * (1 - left_margin - right_margin)
 
             text3 = ROOT.TLatex()
-            #text3.SetTextSize(0.045)
             text3.SetNDC()
             text3.SetTextAlign(22)
             text3.DrawLatex(ndc_x, 0.03,  "cos#theta_{z}")
@@ -876,7 +842,6 @@ class AnaMaster:
         # let's do something like a map from bin ID to a collection of [E,costheta].
         # and then we pass that to a function that takes care of creating the new bins (maybe?).
 
-
         for r in self.reactions:
             for s in self.samples:
                 for b_idx in s.bin_indices:
@@ -896,8 +861,7 @@ class AnaMaster:
                 exposure = 1
                 HK_factor = 1
                 if self.scale_to_HK:
-                    #exposure = 6510.9/self.exposure[s.name]
-                    exposure = 3650/self.exposure[s.name]
+                    exposure = 6510.9/self.exposure[s.name] # 20 years
                     HK_factor = 8                    
 
                 for b_idx in s.bin_indices:

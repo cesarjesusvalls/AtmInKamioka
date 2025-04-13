@@ -19,15 +19,10 @@ class oscProb:
         os.makedirs(self._outdir, exist_ok=True)
 
         self._FULL_PREM = self._earth.raw_PREM
-        self._ALTER_PREM = self._earth.mod_PREM
         self._dump_prem()
 
         self.bp_true = None
-        self.bp_mod = None
-
         self.hist_true = None
-        self.hist_mod = None
-        self.hist_diff = None
 
         # Define the oscillation parameters
         self.t12 = self._cfg['osc3']['oscpar'].get('t12', 0.308)
@@ -56,13 +51,11 @@ class oscProb:
 
     def _dump_prem(self):
         np.savetxt(f'{self._outdir}/FULL_PREM.dat', self._FULL_PREM, fmt='%.3f', delimiter='\t')
-        np.savetxt(f'{self._outdir}/ALTER_PREM.dat', self._ALTER_PREM, fmt='%.3f', delimiter='\t')
+        
     def _load_barger_prop(self):
         # Create an instance of BargerPropagator
         self.bp_true = BargerPropagator.PyBargerPropagator(f'{self._outdir}/FULL_PREM.dat')
-        self.bp_mod = BargerPropagator.PyBargerPropagator(f'{self._outdir}/ALTER_PREM.dat')
         self.bp_true.definePath(self.cosz, self.prod_height, True)
-        self.bp_mod.definePath(self.cosz, self.prod_height, True)
 
         self._compute_osc_prob()
     def _prepare_hist(self):
@@ -87,14 +80,8 @@ class oscProb:
         for i in range(1, self.hist_true.GetNbinsX()):
             energy = self.hist_true.GetBinCenter(i)
             self.bp_true.setMNS(self.t12, self.t13, self.t23, self.dm21, self.mAtm, self.delta, energy, self.ks, self.nutype)
-            self.bp_mod.setMNS(self.t12, self.t13, self.t23, self.dm21, self.mAtm, self.delta, energy, self.ks, self.nutype)
-
             self.bp_true.propagate(self.nutype)
-            self.bp_mod.propagate(self.nutype)
             self.hist_true.SetBinContent(i, self.bp_true.getProb(self.nu_origin, self.nu_end))
-            self.hist_mod.SetBinContent(i, self.bp_mod.getProb(self.nu_origin, self.nu_end))
-            self.hist_diff.SetBinContent(i, self.bp_true.getProb(self.nu_origin, self.nu_end) - self.bp_mod.getProb(self.nu_origin, self.nu_end))
-            #print(f"Bin {i} difference = {b1.getProb(2, 2) - b2.getProb(2, 2)}")
 
     def get_osc_prob(self, energy, cosZ, nutype, flav_ini, flav_end):
         self.bp_true.definePath(cosZ, self.prod_height, True)
@@ -106,56 +93,3 @@ class oscProb:
         self._earth = newEarth(self._cfg, self._earth.kappa, self._earth.deltaR)
         np.savetxt(f'{self._outdir}/TEMP_PREM.dat', self._earth.mod_PREM, fmt='%.3f', delimiter='\t')
         self.bp_true = BargerPropagator.PyBargerPropagator(f'{self._outdir}/TEMP_PREM.dat')
-
-    def _plot_osc_prob(self):
-        self.hist_true.GetYaxis().SetTitle('Osc. Probability ')
-        self.hist_true.GetYaxis().SetRangeUser(0.005, 1.3)
-
-        self.hist_diff.GetXaxis().SetTitle('E_{#nu} (GeV)')
-        self.hist_diff.GetYaxis().SetTitle('Residual')
-        self.hist_diff.GetXaxis().SetLabelSize(0.08)
-        self.hist_diff.GetYaxis().SetLabelSize(0.08)
-        self.hist_diff.GetXaxis().SetTitleSize(0.08)
-        self.hist_diff.GetYaxis().SetTitleSize(0.08)
-
-        self.hist_diff.GetYaxis().SetTitleOffset(0.45)
-        self.hist_diff.GetYaxis().SetNdivisions(505)
-
-        self.hist_true.Smooth()
-        self.hist_mod.Smooth()
-        self.hist_diff.Smooth()
-
-        c = TCanvas("c","c", 800, 600)
-        c.SetFillColor(0)
-        c.SetLogx(1)
-
-        c.cd()
-        pad1 = ROOT.TPad("pad1","pad1",0,0.3,1,1)
-        pad1.SetBottomMargin(0)
-        pad1.Draw()
-        pad1.SetLogx(1)
-
-        c.cd()
-        pad2 = ROOT.TPad("pad2","pad2",0,0,1,0.3)
-        pad2.SetTopMargin(0)
-        pad2.SetBottomMargin(0.25)
-        pad2.Draw()
-        pad2.SetLogx(1)
-
-        pad1.cd()
-        self.hist_true.Draw()
-        self.hist_mod.Draw("same")
-        self.L.Draw("same")
-        pad2.cd()
-        self.hist_diff.Draw("c")
-
-        save_plot_name = (f'{self._outdir}/PREM.comp.thru_center_kappa={self._earth.kappa}'
-                          + f"dRIC_{self._earth.deltaR[0]}_dROC_{self._earth.deltaR[1]}_dRMT_{self._earth.deltaR[2]}"
-                          + f"cosZ={self.cosz}_sin23={self.t23}_"
-                          + self.nu_flavor[self.nutype*self.nu_origin]+"_"+self.nu_flavor[self.nutype*self.nu_end]
-                          + "_" + self.MO[self.mAtm/abs(self.mAtm)] + '.png')
-        c.SaveAs(save_plot_name)
-
-
-# end of script
-##################

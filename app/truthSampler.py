@@ -277,10 +277,6 @@ def make_all_binned_tables(anaMaster, binning_scheme, outpath, tag):
                     b.fill_values()
                 else:
                     b.fill_zeros()
-                    # if '*' not in s.name and 'upmu' not in s.name and 'subgev' not in s.name:
-                    #     empty_cnt += 1
-                    #     if "Total" in r.name:
-                    #         print(r.name, s.name, idx, b.boundaries)
     
             # we need first to do things per sample to avoid cross-sample migration, then we flatten
             for item in list_of_new_bin_objects:
@@ -317,51 +313,14 @@ def smear_costheta(costheta, smearing_degrees=10):
     # Apply the rotation to the vector
     rotated_vector = np.dot(rotation_matrix, vector)
 
-    #print(vector, rotated_vector, np.dot(vector, rotated_vector))
-
     # Calculate the new costheta
     smeared_costheta = rotated_vector[2]  # z-component is costheta
     angle_between = np.arccos(np.dot(vector, rotated_vector))
-    #print(f"Angle between original and rotated vectors: {np.degrees(angle_between):.4f} degrees")
 
     return smeared_costheta
 
-# def smear_energy(energy, energy_resolution_wrt_SK=1):
-#     expected_resolution = energy_resolution_wrt_SK*0.22*(energy**0.52)
-#     return energy*np.random.normal(1,expected_resolution)
-
 def smear_energy(energy, energy_resolution=1):
-    # expected_resolution = energy_resolution_wrt_SK*0.6*(energy**0.23)
-    # x = energy*np.random.normal(1,expected_resolution)
-    #print(energy, expected_resolution, x)
     return energy*np.random.normal(1,energy_resolution)
-
-# def smear_energy(energy, energy_resolution_wrt_SK=1):
-#     a = 0.6*energy_resolution_wrt_SK
-#     b = 1.23
-#     expected_resolution = a * np.power(energy, b)
-#     return energy*np.random.normal(1,expected_resolution)
-
-# def apply_Z_smearing(x, tag):
-#     if tag == 'E':
-#         return smear_costheta(x, 10)
-#     if tag == 'F':
-#         return smear_costheta(x, 20)
-#     if tag == 'G':
-#         return smear_costheta(x, 30)
-
-#     return x
-
-
-# def apply_E_smearing(x, tag):
-#     if tag == 'B':
-#         return smear_energy(x, 1)
-#     if tag == 'C':
-#         return smear_energy(x, 0.5)
-#     if tag == 'D':
-#         return smear_energy(x, 0.1)
-
-#     return x
 
 def apply_Z_smearing(x, tag):
     if tag == 'B':
@@ -500,11 +459,6 @@ def create_bins_using_narrow_binning(anaMaster):
 
         return (2.0, 2.5, 2.6, 2.7, 2.8, 2.9, 3.0, 3.1, 3.5)
 
-
-    # [-1.0, -0.84, -0.64, -0.45, -0.22, 0.0, 0.22, 0.45, 0.64, 0.84, 1.0]
-    # [-1.0, -0.9, -0.8, -0.7, -0.6, -0.5, -0.4, -0.3, -0.2, -0.1, 0.0]
-
-
     sample_to_new_bin_boundaries = {}
     for s in anaMaster.samples:
             print(s.name)
@@ -544,92 +498,3 @@ def create_bins_using_narrow_binning(anaMaster):
                 print('special z-binning: ', s.name)
 
     return sample_to_new_bin_boundaries
-
-
-# def create_bins_using_narrow_binning(anaMaster):
-
-#     def get_bin_values(x, name):
-#         if 'pi0' in name:
-#             return (2.,3., 3.5, 4.)
-
-#         if 'upmu_stop' in name:
-#             return (3.0, 3.6, 3.8, 4., 4.5, 5.5)
-
-#         if 'subgev' in name and 'nuelike' in name:
-#             return (2.6, 2.9, 3.0, 3.2, 3.5)
-
-#         if 'pc_thru' in name:
-#             return (3.0, 3.5, 3.7, 3.9, 4.1, 4.3, 4.5, 5.5)
-
-#         if 'multigev_1ring_nuebarlike' in name:
-#             return (3.0, 3.3, 3.6, 4.5)
-
-#         if 'multigev_1ring_nuelike' in name:
-#             return (3.0, 3.6, 4.5)
-
-#         if 'subgev_1ring_mulike_2decaye' in name or 'subgev_1ring_elike_1decaye' in name:
-#             return (2.5, 2.9, 3.2, 4)
-
-#         if 'multigev_multiring_nuelike' in name or 'multigev_multiring_nuebarlike' in name:
-#             return (3.0, 3.5, 3.7, 5.0)
-
-#         if 'multigev_multiring_mulike' in name:
-#             return (3.0, 3.2, 3.3, 3.4, 3.5, 3.6, 3.8, 4.0, 5.0)
-
-#         if 'multigev_multiring_other' in name:
-#             return (3.3, 3.8, 4.0, 5.0)
-
-#         if 'showering' in name:
-#             if 'non' in name:
-#                 return (3.0, 4.5, 8.0)
-#             else:
-#                 return (3.0, 8.0)
-
-#         if 'multigev_1ring' in name and 'mu' in name:
-#             return (3.0, 3.4, 5.0)
-
-#         if 'pc_stop' in name:
-#             return (2.0, 3.4, 5.0)
-
-#         if 'subgev' in name and 'nuebarlike' in name:
-#             return (2.0, 2.3, 2.5, 2.7, 2.8, 3.0, 3.2, 4)
-
-#         return (2.0, 2.5, 2.6, 2.7, 2.8, 2.9, 3.0, 3.1, 3.5)
-
-
-
-#     sample_to_new_bin_boundaries = {}
-#     for s in anaMaster.samples:
-#             print(s.name)
-#             positions = anaMaster.bin_manager.get_indices_with_value_one(s.bin_names)
-        
-#             if positions:
-#                 xmin = get_bin_as_float(s.bin_names[0])[0]
-#                 ymin = get_bin_as_float(s.bin_names[0])[2]
-#                 xmax = get_bin_as_float(s.bin_names[-1])[1]
-#                 ymax = get_bin_as_float(s.bin_names[-1])[3]
-
-#                 Zs = [ymin]
-#                 for idx in range(positions[0]):
-#                     Zs.append(get_bin_as_float(s.bin_names[idx])[3])
-#                 Zs.append(ymax)
-
-#                 Es = [xmin]
-#                 for idx in positions:
-#                     Es.append(get_bin_as_float(s.bin_names[idx])[1])
-
-#                 Es = get_bin_values(tuple(Es), s.name)
-#                 sample_to_new_bin_boundaries[s.name] = create_bins(Es, Zs)
-
-#             else:
-#                 Es = []
-#                 for i in range(len(s.bin_names)):
-#                     Es.append(get_bin_as_float(s.bin_names[i])[0])
-#                 Es.append(get_bin_as_float(s.bin_names[-1])[1])
-#                 Es = get_bin_values(tuple(Es), s.name)
-
-#                 Zs = [-1,1]
-#                 sample_to_new_bin_boundaries[s.name] = create_bins(Es, Zs)
-#                 print('special z-binning: ', s.name)
-
-#     return sample_to_new_bin_boundaries
