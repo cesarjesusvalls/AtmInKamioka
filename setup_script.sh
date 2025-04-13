@@ -1,0 +1,2 @@
+export PYTHONPATH=$PYTHONPATH:/Users/cjesus/Documents/HKnuTomo
+export MACOSX_DEPLOYMENT_TARGET=12.3
