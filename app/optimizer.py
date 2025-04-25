@@ -34,9 +34,6 @@ class optManager:
         self.set_params_grid()
 
     def set_nominal_params(self):
-        self.ana_master.OscProb._earth.change_type = None
-        self.ana_master.OscProb._earth.change_value = None
-
         self.nominal_t23 = 0.58
         self.nominal_t13 = 0.022
         self.nominal_mAtm = 2.4e-3
@@ -57,29 +54,11 @@ class optManager:
         step_t13 = 0.0055
         self.list_of_t13 = np.arange(0., 0.075+step_t13, step_t13)
 
-        viable_range = {
-            'IC': (0.7, 1.1),
-            'OC': (0.7, 1.1),
-            'IM': (0.85, 1.45),
-            'OM': (0.35, 1.1)
-        }
-
-        self.list_of_kappa_IC = np.arange(viable_range['IC'][0], viable_range['IC'][1], 0.025)
-        self.list_of_kappa_OC = np.arange(viable_range['OC'][0], viable_range['OC'][1], 0.025)
-        self.list_of_kappa_IM = np.arange(viable_range['IM'][0], viable_range['IM'][1], 0.025)
-        self.list_of_kappa_OM = np.arange(viable_range['OM'][0], viable_range['OM'][1], 0.05)
-
-        self.list_of_ICR = np.arange(421.5, 2323.5, 50)
-
-        self.list_of_OCR = np.arange(2480, 4501, 100)
-
     def reset_to_nominal_params(self):
         self.ana_master.OscProb.t23 = self.nominal_t23
         self.ana_master.OscProb.t13 = self.nominal_t13
         self.ana_master.OscProb.mAtm = self.nominal_mAtm
         self.ana_master.OscProb.delta = self.nominal_dcp
-        self.ana_master.OscProb._earth.change_type = None
-        self.ana_master.OscProb._earth.change_value = None
 
     def get_counts(self):
         tot_counts = []
@@ -98,115 +77,7 @@ class optManager:
             return calc_chi2(self.nominal_counts, self.get_counts())
 
         list_of_chi2 = []
-
         outname = None
-        if case == 'kappa_IC':
-            ic_factors = []
-            oc_factors = []
-            im_factors = []
-            om_factors = []
-            for kappa in self.list_of_kappa_IC:
-                print(kappa)
-                self.ana_master.OscProb.set_Earth_model('IC', kappa)
-                list_of_chi2.append(calc_Chi2())
-                factors = self.ana_master.OscProb._earth.layer_factors
-                print(factors)
-                ic_factors.append(factors['IC'])
-                oc_factors.append(factors['OC'])
-                im_factors.append(factors['IM'])
-                om_factors.append(factors['OM'])
-
-            dic = {'x': np.array(self.list_of_kappa_IC), 'chi2': np.array(list_of_chi2), \
-            'ICk': ic_factors, 'OCk': oc_factors, 'IMk': im_factors, 'OMk': om_factors}
-            df = pd.DataFrame(dic)
-            outname = self.outpath+self.det+'_'+self.tag+'_'+case+'_1D.csv'
-            df.to_csv(outname, index=False)
-
-
-        if case == 'kappa_OC':
-            ic_factors = []
-            oc_factors = []
-            im_factors = []
-            om_factors = []
-            for kappa in self.list_of_kappa_OC:
-                print(kappa)
-                self.ana_master.OscProb.set_Earth_model('OC', kappa)
-                list_of_chi2.append(calc_Chi2())
-                factors = self.ana_master.OscProb._earth.layer_factors
-                print(factors)
-                ic_factors.append(factors['IC'])
-                oc_factors.append(factors['OC'])
-                im_factors.append(factors['IM'])
-                om_factors.append(factors['OM'])
-
-            dic = {'x': np.array(self.list_of_kappa_OC), 'chi2': np.array(list_of_chi2), \
-            'ICk': ic_factors, 'OCk': oc_factors, 'IMk': im_factors, 'OMk': om_factors}
-            df = pd.DataFrame(dic)
-            outname = self.outpath+self.det+'_'+self.tag+'_'+case+'_1D.csv'
-            df.to_csv(outname, index=False)
-
-
-        if case == 'kappa_IM':
-            ic_factors = []
-            oc_factors = []
-            im_factors = []
-            om_factors = []
-            for kappa in self.list_of_kappa_IM:
-                print(kappa)
-                self.ana_master.OscProb.set_Earth_model('IM', kappa)
-                list_of_chi2.append(calc_Chi2())
-                factors = self.ana_master.OscProb._earth.layer_factors
-                print(factors)
-                ic_factors.append(factors['IC'])
-                oc_factors.append(factors['OC'])
-                im_factors.append(factors['IM'])
-                om_factors.append(factors['OM'])
-
-            dic = {'x': np.array(self.list_of_kappa_IM), 'chi2': np.array(list_of_chi2), \
-            'ICk': ic_factors, 'OCk': oc_factors, 'IMk': im_factors, 'OMk': om_factors}
-            df = pd.DataFrame(dic)
-            outname = self.outpath+self.det+'_'+self.tag+'_'+case+'_1D.csv'
-            df.to_csv(outname, index=False)
-
-        if case == 'kappa_OM':
-            ic_factors = []
-            oc_factors = []
-            im_factors = []
-            om_factors = []
-            for kappa in self.list_of_kappa_OM:
-                print(kappa)
-                self.ana_master.OscProb.set_Earth_model('OM', kappa)
-                list_of_chi2.append(calc_Chi2())
-                factors = self.ana_master.OscProb._earth.layer_factors
-                print(factors)
-                ic_factors.append(factors['IC'])
-                oc_factors.append(factors['OC'])
-                im_factors.append(factors['IM'])
-                om_factors.append(factors['OM'])
-
-            dic = {'x': np.array(self.list_of_kappa_OM), 'chi2': np.array(list_of_chi2), \
-            'ICk': ic_factors, 'OCk': oc_factors, 'IMk': im_factors, 'OMk': om_factors}
-            df = pd.DataFrame(dic)
-            outname = self.outpath+self.det+'_'+self.tag+'_'+case+'_1D.csv'
-            df.to_csv(outname, index=False)
-
-        if case == 'ICR':
-            for R in self.list_of_ICR:
-                self.ana_master.OscProb.set_Earth_model('IC_OC', R)
-                list_of_chi2.append(calc_Chi2())
-
-            df = pd.DataFrame({'x': np.array(self.list_of_ICR), 'chi2': np.array(list_of_chi2)})
-            outname = self.outpath+self.det+'_'+self.tag+'_'+case+'_1D.csv'
-            df.to_csv(outname, index=False)
-
-        if case == 'OCR':
-            for R in self.list_of_OCR:
-                self.ana_master.OscProb.set_Earth_model('OC_IM', R)
-                list_of_chi2.append(calc_Chi2())
-
-            df = pd.DataFrame({'x': np.array(self.list_of_OCR), 'chi2': np.array(list_of_chi2)})
-            outname = self.outpath+self.det+'_'+self.tag+'_'+case+'_1D.csv'
-            df.to_csv(outname, index=False)
 
         if case == 't13':
             print('doing t13')

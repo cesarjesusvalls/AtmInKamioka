@@ -4,7 +4,7 @@ import numpy as np
 import ROOT
 import copy
 from app.path import *
-from app import oscProb, oscMaster
+from app import oscMaster
 import yaml
 from app import fluxManager
 from multiprocessing import Pool
@@ -15,8 +15,8 @@ import matplotlib.pyplot as plt
 
 
 def valid_sample_condition(name):
-    return 'Showering' not in name and 'Sub-GeV' not in name and 'pi^{0}' not in name and '*' not in name
-    #return True
+    #return 'Showering' not in name and 'Sub-GeV' not in name and 'pi^{0}' not in name and '*' not in name
+    return True
 
 def plot_sampling(q_values):
 
@@ -310,8 +310,6 @@ class AnaBin:
 
         return cosz_bias, cosz_width_ratio, e_resolution
 
-
-
     def resample(self):
 
         nToys = 10000
@@ -430,7 +428,7 @@ class AnaSample:
         return chi2
 
     def create_data_histogram(self, title="Data"):
-        data_hist = ROOT.TH1F(self.name+title, title, len(self.bin_names), 0, len(self.bin_names))
+        data_hist = ROOT.TH1F(self.name+title+str(np.random.randint(1e9)), title, len(self.bin_names), 0, len(self.bin_names))
         data_hist.GetYaxis().SetTitle("Counts")
         data_hist.SetMarkerStyle(20)
         data_hist.SetMarkerColor(ROOT.kBlack)
@@ -462,7 +460,9 @@ class AnaSample:
     def create_histograms(self):
         # one histogram per reaction
         for reac_idx, reac_name in enumerate(self.reaction_names):
-            hist = ROOT.TH1F(self.name+"  "+reac_name, self.name+"  "+reac_name, len(self.bin_names), 0, len(self.bin_names))
+            hist_title = self.name+"  "+reac_name
+            uniq_obj_name = hist_title+str(np.random.randint(1e9))
+            hist = ROOT.TH1F(uniq_obj_name, hist_title, len(self.bin_names), 0, len(self.bin_names))
             hist.GetYaxis().SetTitle("Counts")
             if 'Total' not in reac_name:
                 hist.SetFillColor(self.custom_palette[reac_idx])
@@ -616,7 +616,9 @@ class AnaSample:
         if len(self.bin_names)<10:
             return hist
 
-        new_hist = ROOT.TH1F('1D '+hist.GetName(),'1D '+hist.GetName(), 10, 0, 10)
+        hist_title = '1D '+hist.GetName()
+        uniq_obj_name = hist_title+str(np.random.randint(1e9))
+        new_hist = ROOT.TH1F(uniq_obj_name, hist_title, 10, 0, 10)
 
         new_hist.SetFillColor(hist.GetFillColor())
         new_hist.SetLineWidth(hist.GetLineWidth())
@@ -707,15 +709,7 @@ class AnaMaster:
     """
     def __init__(self, data_folder = base_dir_path+'../data/unoscillated', scale_to_HK=False, dont_replace_names=False, binning_file=base_dir_path+"../data/sk_2023_BinInfo.txt", mask_bins=True):
         self.scale_to_HK = scale_to_HK
-        self.config_file=base_dir_path+'../config/chi2_config.yaml'
-        #self.config_file='/afs/cern.ch/work/c/cjesus/private/EarthTomo/config/chi2_config.yaml'
-        
-        with open(self.config_file,'r') as f:
-            cfg=yaml.safe_load(f)
-            #self.OscProb = oscProb(cfg)
-            self.OscProb = oscMaster(cfg)
-            #self.OscProb._load_barger_prop()
-
+        self.OscProb = oscMaster()
         self.bin_manager = BinManager(binning_file)
         self.reactions = self.process_unoscillated_data(data_folder)
         self.reaction_names = [reaction.name for reaction in self.reactions]
@@ -816,8 +810,8 @@ class AnaMaster:
 
             replaced_names[original_name] = name
 
-        print(self.exposure)
-        print(self.exposure.values())
+        # print(self.exposure)
+        # print(self.exposure.values())
         return replaced_names
 
     def fill_histograms(self):
@@ -866,8 +860,8 @@ class AnaMaster:
 
                 for b_idx in s.bin_indices:
                     r.ana_bins[b_idx].counts=r.ana_bins[b_idx].counts*exposure*HK_factor
-                    if r.ana_bins[b_idx].counts:
-                        print(s.name, "----", self.exposure[s.name], "----", r.ana_bins[b_idx].counts)
+                    # if r.ana_bins[b_idx].counts:
+                    #     print(s.name, "----", self.exposure[s.name], "----", r.ana_bins[b_idx].counts)
 
 
     def process_unoscillated_data(self, data_folder):

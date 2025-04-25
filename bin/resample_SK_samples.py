@@ -13,55 +13,55 @@ def main():
     process_FDS (anaMaster, "A", create_bins_using_narrow_binning(anaMaster))
     print('Done!\n')
 
-    print('Creating Fake Data "B".\n')
-    #### FDS B ####
-    process_FDS (anaMaster, "B", create_bins_using_narrow_binning(anaMaster))
-    print('Done!\n')
+    # print('Creating Fake Data "B".\n')
+    # #### FDS B ####
+    # process_FDS (anaMaster, "B", create_bins_using_narrow_binning(anaMaster))
+    # print('Done!\n')
 
-    print('Creating Fake Data "C".\n')
-    #### FDS C ####
-    process_FDS (anaMaster, "C", create_bins_using_narrow_binning(anaMaster))
-    print('Done!\n')
+    # print('Creating Fake Data "C".\n')
+    # #### FDS C ####
+    # process_FDS (anaMaster, "C", create_bins_using_narrow_binning(anaMaster))
+    # print('Done!\n')
 
-    print('Creating Fake Data "D".\n')
-    #### FDS D ####
-    process_FDS (anaMaster, "D", create_bins_using_narrow_binning(anaMaster))
-    print('Done!\n')
+    # print('Creating Fake Data "D".\n')
+    # #### FDS D ####
+    # process_FDS (anaMaster, "D", create_bins_using_narrow_binning(anaMaster))
+    # print('Done!\n')
 
-    print('Creating Fake Data "E".\n')
-    #### FDS E ####
-    process_FDS (anaMaster, "E", create_bins_using_narrow_binning(anaMaster))
-    print('Done!\n')
+    # print('Creating Fake Data "E".\n')
+    # #### FDS E ####
+    # process_FDS (anaMaster, "E", create_bins_using_narrow_binning(anaMaster))
+    # print('Done!\n')
 
-    print('Creating Fake Data "F".\n')
-    #### FDS F ####
-    process_FDS (anaMaster, "F", create_bins_using_narrow_binning(anaMaster))
-    print('Done!\n')
+    # print('Creating Fake Data "F".\n')
+    # #### FDS F ####
+    # process_FDS (anaMaster, "F", create_bins_using_narrow_binning(anaMaster))
+    # print('Done!\n')
 
-    print('Creating Fake Data "G".\n')
-    #### FDS G ####
-    process_FDS (anaMaster, "G", create_bins_using_narrow_binning(anaMaster))
-    print('Done!\n')
+    # print('Creating Fake Data "G".\n')
+    # #### FDS G ####
+    # process_FDS (anaMaster, "G", create_bins_using_narrow_binning(anaMaster))
+    # print('Done!\n')
 
-    print('Creating Fake Data "H".\n')
-    #### FDS H ####
-    process_FDS (anaMaster, "H", create_bins_using_narrow_binning(anaMaster))
-    print('Done!\n')
+    # print('Creating Fake Data "H".\n')
+    # #### FDS H ####
+    # process_FDS (anaMaster, "H", create_bins_using_narrow_binning(anaMaster))
+    # print('Done!\n')
 
-    print('Creating Fake Data "I".\n')
-    #### FDS I ####
-    process_FDS (anaMaster, "I", create_bins_using_narrow_binning(anaMaster))
-    print('Done!\n')
+    # print('Creating Fake Data "I".\n')
+    # #### FDS I ####
+    # process_FDS (anaMaster, "I", create_bins_using_narrow_binning(anaMaster))
+    # print('Done!\n')
 
-    print('Creating Fake Data "J".\n')
-    #### FDS J ####
-    process_FDS (anaMaster, "J", create_bins_using_narrow_binning(anaMaster))
-    print('Done!\n')
+    # print('Creating Fake Data "J".\n')
+    # #### FDS J ####
+    # process_FDS (anaMaster, "J", create_bins_using_narrow_binning(anaMaster))
+    # print('Done!\n')
 
-    print('---->  All Fake Data is Ready.\n')
+    # print('---->  All Fake Data is Ready.\n')
 
     # Let's store plots for all the new data:
-    tags = ["J"]
+    tags = ["A"]
     for tag in tags:
         ana_new = AnaMaster("../fake_data/FDS_"+tag+"/unoscillated/",  binning_file="../fake_data/FDS_"+tag+"/binning.txt", mask_bins=False)
         ana_new.fill_histograms()

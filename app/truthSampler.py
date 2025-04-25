@@ -1,4 +1,5 @@
 import numpy as np
+from app.path import *
 
 def get_bin_as_float(input_bin):
     return [float(x) for x in input_bin.strip('[').strip(']').split(' ')]
@@ -366,7 +367,7 @@ def apply_E_smearing(x, tag):
 
 
 def process_FDS(anaMaster, tag, binning_scheme):
-    path = "/Users/cjesus/Documents/HKnuTomo/fake_data/FDS_" + tag + "/"
+    path =  base_dir_path+"../fake_data/FDS_" + tag + "/"
     fname_bins = path + "/binning.txt"
     dict_to_structured_file(binning_scheme, fname_bins)
     print(f"File '{fname_bins}' has been created.")
@@ -470,14 +471,12 @@ def create_bins_using_narrow_binning(anaMaster):
                 xmax = get_bin_as_float(s.bin_names[-1])[1]
                 ymax = get_bin_as_float(s.bin_names[-1])[3]
 
-                # Zs = [ymin]
-                # for idx in range(positions[0]):
-                #     Zs.append(get_bin_as_float(s.bin_names[idx])[3])
-                # Zs.append(ymax)
+                Zs = [ymin]
+                for idx in range(positions[0]):
+                    Zs.append(get_bin_as_float(s.bin_names[idx])[3])
+                Zs.append(ymax)
 
-                Zs = np.linspace(-1,0,41)
-
-                print('Zs: ', Zs)
+                #Zs = np.linspace(-1,0,41)
 
                 Es = [xmin]
                 for idx in positions:

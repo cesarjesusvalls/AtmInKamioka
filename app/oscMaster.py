@@ -3,21 +3,22 @@ import os
 from wrapper_Prob3 import BargerPropagator
 
 class oscMaster:
-    def __init__(self,  cfg:dict):
-        PREM_file = cfg['data']['filepath']
-        
+    def __init__(self):
+        PREM_file = "../data/PREM.dat"
+
         self.bp_true = BargerPropagator.PyBargerPropagator(PREM_file)
 
-        self.t12   = cfg['osc3']['oscpar'].get('t12', 0.308)
+        self.t12   = 0.307
         self.t13   = 0.022
         self.t23   = 0.58
-        self.dm21  = cfg['osc3']['oscpar'].get('dm21', 7.54E-5)
+        self.dm21  = 7.53e-5
         self.mAtm  = 2.4e-3
         self.delta = 4.53
 
-        self.ks = cfg['osc3'].get('ks', 1)
-        self.nutype = cfg['osc3'].get('nutype', 1)
-        self.prod_height = cfg['osc3'].get('prod_height', 20.0)
+        self.ks = 1   
+        # ks: 0 - sin2(2q) variables
+        # ks: 1 - sin2( q) variables
+        self.prod_height = 20.
 
         self.nu_flavor = {1: '#nu_{e}', 2: '#nu_{#mu}', 3: '#nu_{#tau}', -1: '#bar{#nu}_{e}', -2: '#bar{#nu}_{#mu}', -3: '#bar{#nu}_{#tau}'}
         self.MO = {1: 'NO', -1: 'IO'}
