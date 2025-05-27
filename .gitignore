@@ -16,3 +16,8 @@ sftp-config.json
 *.so
 *.DS_Store
 *.csv
+
+.ipynb_checkpoints/
+SK_performance_Study/
+notebooks/output_SK_performance/
+fake_data/
